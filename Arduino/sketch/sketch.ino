@@ -26,7 +26,7 @@ void setup() {
 }
 
 void loop() {
-  int lightState = digitalRead(lightPin); 
+  int lightState = !digitalRead(lightPin); 
   sensors.requestTemperatures();
   float tempCelsius = sensors.getTempCByIndex(0);
   if (scale.is_ready()) {
