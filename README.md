@@ -1,20 +1,40 @@
-# lf7g3
+# BierAmpel
 Dokumentation der Projekarbeit im Lernfeld 7 der Gruppe 3
 
-# Kühlbox mit Bierampel
+## Gruppemitglieder
+- Ahmed
+- Ben
+- Kevin
+- Lucas
+- Michael
+- Zenon
+
 ## Wir brauchen:
-Eine Kühlbox -> Müsste ich noch haben.
-Drucksensoren am Boden -> Ist genug Bier da:
-[Amazon](https://www.amazon.de/Menschlichen-Gewichtungssensor-Verst%C3%A4rker-Dehnungsmessger%C3%A4t-Badezimmerwaage/dp/B07FMN1DBN)
+1. Eine Kühlbox 
+    - Müsste ich noch haben.
 
-Temparatursensor in der Kühlbox -> Ist das Bier kalt:
-[Amazon](https://www.amazon.de/Temperatursensor-ENOPYO-Wasserdichte-Temperaturf%C3%BChler-Temperaturkabel/dp/B0DPKHDMHH)
+1. Drucksensoren am Boden 
+    - Ist genug Bier da
+    - [Amazon](https://www.amazon.de/Menschlichen-Gewichtungssensor-Verst%C3%A4rker-Dehnungsmessger%C3%A4t-Badezimmerwaage/dp/B07FMN1DBN)
 
-Helligkeitssensor in der Kühlbox -> Ist die Box offen:
-[Amazon](https://www.amazon.de/DollaTek-Digitales-Intensit%C3%A4tssensormodul-Fotowiderstand-Photowiderstand/dp/B07DJ4WQV5)
+1. Temparatursensor in der Kühlbox 
+    - Ist das Bier kalt
+    - [Amazon](https://www.amazon.de/Temperatursensor-ENOPYO-Wasserdichte-Temperaturf%C3%BChler-Temperaturkabel/dp/B0DPKHDMHH)
 
-Eine kleine Ampel aus LEDs -> ist Bier zum Trinken Bereit? -> LEDs in den nötigen Farben habe ich.
-Alarm Buzzer -> Ist die Box zu Lange offen? -> Buzzer habe ich. (Alternativ Lautsprecher am RPi spielt einen Alarmton ab)
+1. Helligkeitssensor in der Kühlbox 
+    - Ist die Box offen
+    - [Amazon](https://www.amazon.de/DollaTek-Digitales-Intensit%C3%A4tssensormodul-Fotowiderstand-Photowiderstand/dp/B07DJ4WQV5)
+
+1. Eine kleine Ampel aus LEDs 
+    - Ist Bier zum Trinken Bereit?
+    - LEDs in den nötigen Farben habe ich.
+    - Gehäuse kann ich drucken.
+        - [Printables](https://www.printables.com/model/420231-traffic-light-for-arduino-ampel-fur-arduino)
+
+1. Alarm Buzzer 
+    - Ist die Box zu Lange offen? 
+    - Buzzer habe ich. 
+        - Alternativ Lautsprecher am RPi spielt einen Alarmton ab.
 
 
 ## Umsetzung
@@ -30,8 +50,7 @@ Damit hätten wir alle Anforderungen erfüllt.
 
 Den Code Packe ich auf GitHub. Wenn ihr einen Account habt, kann ich euch dafür freischalten.
 
-Die LDE-Ampel druck ich im 3D-Drucker: Quelle [Printables](https://www.printables.com/model/420231-traffic-light-for-arduino-ampel-fur-arduino)
-
+Die LDE-Ampel druck ich im 3D-Drucker
 ## Kosten
 | Posten         |     Summe |
 |:---------------|----------:|
