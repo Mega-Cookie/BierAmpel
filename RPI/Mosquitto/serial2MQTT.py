@@ -33,6 +33,7 @@ while True:
         line = ser.readline().decode("utf-8").strip()
         data = line.split(",")
         data = [float(item.split(":")[1]) for item in data]
+        data = [int(v) if v.is_integer() else v for v in data]
         count = data[0]/unit
         if count <= 2:
             if count < 1:
