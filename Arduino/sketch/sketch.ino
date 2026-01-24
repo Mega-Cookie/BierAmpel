@@ -8,12 +8,9 @@ const int lightPin = 2;
 OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature sensors(&oneWire);
 
-const int weightPin =4;
-
 const int DOUT_PIN = 4;
 const int SCK_PIN = 5;
 HX711 scale;
-
 
 void setup() {
   Serial.begin(9600);
