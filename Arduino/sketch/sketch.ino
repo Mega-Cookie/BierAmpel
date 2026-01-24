@@ -63,7 +63,7 @@ void loop() {
     if (scale.is_ready()) {
       multiPrint("Gewicht:" + String(scale.get_units(), 1) + ",");
     } else {
-      multiPrint("HX711 nicht gefunden.,");
+      multiPrint("Gewicht: 0,");
     }
     multiPrint("Licht:" + String(lightState) + ",");
     multiPrint("Alarm:" + String(alarm) + ",");
