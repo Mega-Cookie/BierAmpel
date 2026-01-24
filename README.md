@@ -59,3 +59,5 @@ Die LDE-Ampel druck ich im 3D-Drucker
 |Lichtsensor     |      4,99€|
 |**Gesamt**      | **17,96€**|
 
+## Nutzung
+./serial2MQTT.py --boker \<MQTT broker IP\> --port \<MQTT broker port\> --user \<MQTT User\> --pass \<MQTT Password\> --serial \<Serial Port\>
