@@ -8,10 +8,10 @@ import paho.mqtt.publish as publish
 
 parser = argparse.ArgumentParser(description="Arduino to MQTT Script")
 parser.add_argument("--broker", default="localhost", help="MQTT broker IP address")
-parser.add_argument("--port", default="/dev/ttyUSB0", help="MQTT broker port")
+parser.add_argument("--port", default=1883, help="MQTT broker port")
 parser.add_argument("--user", help="MQTT broker User")
 parser.add_argument("--pass", dest="password", help="MQTT broker Password")
-parser.add_argument("--serial", default="/dev/ttyUSB0", help="Arduino serial port")
+parser.add_argument("--serial", default="/dev/ttyACM0", help="Arduino serial port")
 args = parser.parse_args()
 SERIAL_PORT = args.serial
 BAUD_RATE = 9600
@@ -58,6 +58,7 @@ while True:
         if data[2] == 1:
             for i in range(len(state)):
                 state[i] = 2
+        worststate = max(state)
         msgs = [
             {"topic": "bierampel/weight/sensor", "payload": data[0]},
             {"topic": "bierampel/weight/count", "payload": count},
@@ -70,19 +71,3 @@ while True:
             {"topic": "bierampel/total/state", "payload": worststate}
         ]
         publish.multiple(msgs, hostname=MQTT_BROKER)
-
-        if worststate == 0:
-            print("OK! Lecker Bierchen ist bereit.|Temperatur:" + data[3] + ";15,20;; Dosen:" + count + ";2;1;;")
-            sys.exit(0)
-        elif worststate == 1:
-            print("WARNING! Die Wahrscheinlichkeit für lecker Bierchen is gering, aber nie Null.|Temperatur:" + data[3] + ";15,20;; Dosen:" + count + ";2;1;;")
-            sys.exit(1)
-        elif worststate == 2 and count == 0:
-            print("CRITICAL! Kein Bierchen.|Temperatur:" + data[3] + ";15,20;; Dosen:" + count + ";2;1;;")
-            sys.exit(2)
-        elif worststate == 2 and state[1] == 2:
-            print("CRITICAL! Lecker Bierchen ist in Gefahr.|Temperatur:" + data[3] + ";15,20;; Dosen:" + count + ";2;1;;")
-            sys.exit(2)
-        elif worststate == 2 and state[2] == 2:
-            print("CRITICAL! Lecker Bierchen ist zu Warm.|Temperatur:" + data[3] + ";15,20;; Dosen:" + count + ";2;1;;")
-            sys.exit(2)
