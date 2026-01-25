@@ -1,4 +1,5 @@
 #! /bin/env python3
+from gpiozero import LED
 import argparse
 import serial
 import time
@@ -6,6 +7,7 @@ import sys
 import paho.mqtt.client as mqtt
 import paho.mqtt.publish as publish
 
+totalOK = LED(26)
 parser = argparse.ArgumentParser(description="Arduino to MQTT Script")
 parser.add_argument("--broker", default="localhost", help="MQTT broker IP address")
 parser.add_argument("--port", default=1883, help="MQTT broker port")
@@ -59,6 +61,10 @@ while True:
             for i in range(len(state)):
                 state[i] = 2
         worststate = max(state)
+        if worststate == 0:
+            totalOK.on()
+        else:
+            totalOK.off()
         msgs = [
             {"topic": "bierampel/weight/sensor", "payload": data[0]},
             {"topic": "bierampel/weight/count", "payload": count},
