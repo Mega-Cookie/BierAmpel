@@ -7,52 +7,64 @@ import sys
 import paho.mqtt.client as mqtt
 import paho.mqtt.publish as publish
 
-
-lightOK = LED(19)
-lightWARN = LED(16)
-lightCRIT = LED(13)
-
-totalOK = LED(26)
-totalWARN = LED(21)
-totalCRIT = LED(20)
+# Define LED Pins
+leds = LEDBoard(
+    lightOK = 17,
+    lightWARN = 16,
+    lightCRIT = 13,
+    weightOK = 12,
+    weightWARN = 6,
+    weightCRIT = 5,
+    lightOK = 12,
+    lightWARN = 6,
+    lightCRIT = 5
+)
 
 # LED Test
-totalOK.on()
-totalWARN.on()
-totalCRIT.on()
-lightOK.on()
-lightWARN.on()
-lightCRIT.on()
-time.sleep(5)
-totalOK.off()
-totalWARN.off()
-totalCRIT.off()
-lightOK.off()
-lightWARN.off()
-lightCRIT.off()
+leds.on()
+sleep(3)
+leds.off()
 
+for led in leds:
+    led.on()
+    sleep(0.5)
+    led.off()
+
+# Input arguments
 parser = argparse.ArgumentParser(description="Arduino to MQTT Script")
+
+parser.add_argument("--serial", default="/dev/ttyACM0", help="Arduino serial port")
+parser.add_argument("--baud", default=9600, help="Serial Baud rate")
+
 parser.add_argument("--broker", default="localhost", help="MQTT broker IP address")
 parser.add_argument("--port", default=1883, help="MQTT broker port")
 parser.add_argument("--user", help="MQTT broker User")
 parser.add_argument("--pass", dest="password", help="MQTT broker Password")
-parser.add_argument("--serial", default="/dev/ttyACM0", help="Arduino serial port")
+
 args = parser.parse_args()
+
 SERIAL_PORT = args.serial
-BAUD_RATE = 9600
+BAUD_RATE = args.baud
+
 MQTT_BROKER = args.broker
 MQTT_PORT = args.port
 mqtt_auth = {
     "username": args.user,
     "password": args.password
 }
+# Connect to MQTT
 client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
 client.connect(MQTT_BROKER, MQTT_PORT)
 client.loop_start()
+
 state = [0,0,0]
 unit = int(500)
+
+# Connect to Serial
 ser = serial.Serial(SERIAL_PORT, BAUD_RATE, timeout=1)
 time.sleep(2)
+
+# Read Sensors, Switch LEDs, Send MQTT
 while True:
     if ser.in_waiting > 0:
         line = ser.readline().decode("utf-8").strip()
@@ -87,30 +99,30 @@ while True:
         state[2] = 0 # placeholder state
         worststate = max(state)
         if worststate == 0:
-            totalOK.on()
-            totalWARN.off()
-            totalCRIT.off()
+            leds.totalOK.on()
+            leds.totalWARN.off()
+            leds.totalCRIT.off()
         elif worststate == 1:
-            totalOK.off()
-            totalWARN.on()
-            totalCRIT.off()
+            leds.totalOK.off()
+            leds.totalWARN.on()
+            leds.totalCRIT.off()
         elif worststate ==2:
-            totalOK.off()
-            totalWARN.off()
-            totalCRIT.on()
+            leds.totalOK.off()
+            leds.totalWARN.off()
+            leds.totalCRIT.on()
 
         if state[1] == 0:
-            lightOK.on()
-            lightWARN.off()
-            lightCRIT.off()
+            leds.lightOK.on()
+            leds.lightWARN.off()
+            leds.lightCRIT.off()
         elif state[1] == 1:
-            lightOK.off()
-            lightWARN.on()
-            lightCRIT.off()
+            leds.lightOK.off()
+            leds.lightWARN.on()
+            leds.lightCRIT.off()
         elif state[1] ==2:
-            lightOK.off()
-            lightWARN.off()
-            lightCRIT.on()
+            leds.lightOK.off()
+            leds.lightWARN.off()
+            leds.lightCRIT.on()
 
         msgs = [
             {"topic": "bierampel/weight/sensor", "payload": data[0]},
