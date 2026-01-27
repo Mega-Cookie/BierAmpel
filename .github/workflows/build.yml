@@ -24,10 +24,10 @@ jobs:
 
       - name: Build with Nuitka
         run: |
-          python -m nuitka --standalone --onefile BierAmpel.py
+          python -m nuitka --standalone --output-dir=packages --output-filename=BierAmpel --onefile BierAmpel.py
 
       - name: Upload Binary
         uses: actions/upload-artifact@v4
         with:
           name: rpi-binary
-          path: packages/  # or the filename of your binary
+          path: packages/BierAmpel  # or the filename of your binary
