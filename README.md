@@ -60,4 +60,4 @@ Die LDE-Ampel druck ich im 3D-Drucker
 |**Gesamt**      | **17,96€**|
 
 ## Nutzung
-./serial2MQTT.py --boker \<MQTT broker IP\> --port \<MQTT broker port\> --user \<MQTT User\> --pass \<MQTT Password\> --serial \<Serial Port\>
+./BierAmpel --boker \<MQTT broker IP\> --port \<MQTT broker port\> --user \<MQTT User\> --pass \<MQTT Password\> --serial \<Serial Port\>
