@@ -7,7 +7,30 @@ import sys
 import paho.mqtt.client as mqtt
 import paho.mqtt.publish as publish
 
+
+lightOK = LED(19)
+lightWARN = LED(16)
+lightCRIT = LED(13)
+
 totalOK = LED(26)
+totalWARN = LED(21)
+totalCRIT = LED(20)
+
+# LED Test
+totalOK.on()
+totalWARN.on()
+totalCRIT.on()
+lightOK.on()
+lightWARN.on()
+lightCRIT.on()
+time.sleep(5)
+totalOK.off()
+totalWARN.off()
+totalCRIT.off()
+lightOK.off()
+lightWARN.off()
+lightCRIT.off()
+
 parser = argparse.ArgumentParser(description="Arduino to MQTT Script")
 parser.add_argument("--broker", default="localhost", help="MQTT broker IP address")
 parser.add_argument("--port", default=1883, help="MQTT broker port")
@@ -60,11 +83,35 @@ while True:
         if data[2] == 1:
             for i in range(len(state)):
                 state[i] = 2
+        state[0] = 0 # placeholder state
+        state[2] = 0 # placeholder state
         worststate = max(state)
         if worststate == 0:
             totalOK.on()
-        else:
+            totalWARN.off()
+            totalCRIT.off()
+        elif worststate == 1:
             totalOK.off()
+            totalWARN.on()
+            totalCRIT.off()
+        elif worststate ==2:
+            totalOK.off()
+            totalWARN.off()
+            totalCRIT.on()
+
+        if state[1] == 0:
+            lightOK.on()
+            lightWARN.off()
+            lightCRIT.off()
+        elif state[1] == 1:
+            lightOK.off()
+            lightWARN.on()
+            lightCRIT.off()
+        elif state[1] ==2:
+            lightOK.off()
+            lightWARN.off()
+            lightCRIT.on()
+
         msgs = [
             {"topic": "bierampel/weight/sensor", "payload": data[0]},
             {"topic": "bierampel/weight/count", "payload": count},
@@ -74,6 +121,6 @@ while True:
             {"topic": "bierampel/light/state", "payload": state[1]},
             {"topic": "bierampel/temp/sensor", "payload": data[3]},
             {"topic": "bierampel/temp/state", "payload": state[2]},
-            {"topic": "bierampel/total/state", "payload": worststate}
+            {"topic": "bierampel/worst/state", "payload": worststate}
         ]
         publish.multiple(msgs, hostname=MQTT_BROKER)
