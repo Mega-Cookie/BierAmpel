@@ -21,10 +21,10 @@ jobs:
 
       - name: Build with Nuitka
         run: |
-          python -m nuitka --standalone --onefile RPI/Mosquitto/serial2MQTT.py
+          python -m nuitka --standalone --onefile serial2MQTT.py
 
       - name: Upload Binary
         uses: actions/upload-artifact@v4
         with:
           name: rpi-binary
-          path: Bierampel_arm64  # or the filename of your binary
+          path: packages/Bierampel_arm64  # or the filename of your binary
