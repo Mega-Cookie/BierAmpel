@@ -1,5 +1,8 @@
 name: Build Nuitka Binary
-on: [push]
+on: 
+  push:
+    branches:
+      - main
 
 jobs:
   build:
@@ -27,4 +30,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: rpi-binary
-          path: packages/Bierampel-arm64  # or the filename of your binary
+          path: packages/  # or the filename of your binary
