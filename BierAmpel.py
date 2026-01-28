@@ -21,10 +21,11 @@ leds = LEDBoard(
 )
 
 # LED Test
+# all
 leds.on()
 sleep(3)
 leds.off()
-
+# cycle
 for led in leds:
     led.on()
     sleep(0.5)
