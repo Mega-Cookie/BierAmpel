@@ -1,5 +1,5 @@
 #! /bin/env python3
-from gpiozero import LED
+from gpiozero import LEDBoard
 import argparse
 import serial
 import time
