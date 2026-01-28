@@ -2,15 +2,34 @@
 from gpiozero import LEDBoard
 import argparse
 import serial
-import time
+from time import sleep
 import sys
 import paho.mqtt.client as mqtt
 import paho.mqtt.publish as publish
 
+def ledswitch(sensor, state):
+    state_map = {0: "OK", 1: "WARN", 2: "CRIT"}
+    suffix = state_map.get(state)
+    if suffix:
+        sensor_name = f"{sensor}{suffix}"
+        led_obj = getattr(leds, sensor_name)
+        led_obj.on()
+        print(sensor_name)
+
 # Define LED Pins
 sensor_state_map = {0: "weight", 1: "light", 2: "temp", 3: "env", 4: "total"}
+led_order = [
+    'totalOK', 'totalWARN', 'totalCRIT',
+    'lightOK', 'lightWARN', 'lightCRIT',
+    'weightOK', 'weightWARN', 'weightCRIT',
+    'tempOK', 'tempWARN', 'tempCRIT',
+    'envOK', 'envWARN', 'envCRIT'
+]
 leds = LEDBoard(
-    lightOK = 17,
+    totalOK = 26,
+    totalWARN = 21,
+    totalCRIT = 20,
+    lightOK = 19,
     lightWARN = 16,
     lightCRIT = 13,
     weightOK = 12,
@@ -19,12 +38,9 @@ leds = LEDBoard(
     tempOK = 27,
     tempWARN = 22,
     tempCRIT= 17,
-    envOK = 25,
     envWARN = 24,
-    envCRIT = 23,
-    totalOK = 12,
-    totalWARN = 6,
-    totalCRIT = 5
+    envOK = 25,
+    envCRIT = 23
 )
 
 # LED Test
@@ -32,8 +48,10 @@ leds = LEDBoard(
 leds.on()
 sleep(3)
 leds.off()
+sleep(0.5)
 # cycle
-for led in leds:
+for name in led_order:
+    led = getattr(leds, name)
     led.on()
     sleep(0.5)
     led.off()
@@ -70,7 +88,7 @@ unit = int(500)
 
 # Connect to Serial
 ser = serial.Serial(SERIAL_PORT, BAUD_RATE, timeout=1)
-time.sleep(2)
+sleep(2)
 
 # Read Sensors, Switch LEDs, Send MQTT
 while True:
@@ -108,9 +126,11 @@ while True:
         state[3] = 0 # placeholder state
         state[4] = max(state[0:4])
 
-        for i in range(0,3,1):
-            ledswitch(sensor_state_map.get(i), state[i])
+        for led in leds:
+            led.off()
 
+        for i in range(0,5,1):
+            ledswitch(sensor_state_map.get(i), state[i])
 
         msgs = [
             {"topic": "bierampel/weight/sensor", "payload": data[0]},
@@ -124,13 +144,3 @@ while True:
             {"topic": "bierampel/worst/state", "payload": state[4]}
         ]
         publish.multiple(msgs, hostname=MQTT_BROKER)
-
-def ledswitch(sensor, state):
-    state_map = {0: "OK", 1: "WARN", 2: "CRIT"}
-    suffix = status_map.get(state)
-    for led in leds:
-        led.off()
-    if suffix:
-        sensor_name = f"{sensor}{suffix}"
-        led_obj = getattr(leds, attr_name)
-        led_obj.on()
