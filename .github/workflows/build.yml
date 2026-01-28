@@ -3,9 +3,8 @@ on:
   push:
     branches:
       - main
-    paths:
-      - 'BierAmpel.py'
-      - 'requirements.txt'
+permissions:
+  contents: write
 jobs:
   build:
     # Use the native ARM64 runner
