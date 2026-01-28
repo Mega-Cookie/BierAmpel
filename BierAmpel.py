@@ -119,7 +119,7 @@ while True:
         ]
         publish.multiple(msgs, hostname=MQTT_BROKER)
 
-def ledswitch(sensor, state)
+def ledswitch(sensor, state):
     state_map = {0: "OK", 1: "WARN", 2: "CRIT"}
     suffix = status_map.get(state)
     for led in leds:
