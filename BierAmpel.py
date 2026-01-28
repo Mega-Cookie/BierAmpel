@@ -15,9 +15,9 @@ leds = LEDBoard(
     weightOK = 12,
     weightWARN = 6,
     weightCRIT = 5,
-    lightOK = 12,
-    lightWARN = 6,
-    lightCRIT = 5
+    totalOK = 12,
+    totalWARN = 6,
+    totalCRIT = 5
 )
 
 # LED Test
