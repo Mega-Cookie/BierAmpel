@@ -1,11 +1,14 @@
 #! /bin/env python3
-from gpiozero import LEDBoard
+from gpiozero import LEDBoard, Device
+from gpiozero.pins.lgpio import LGPIOFactory
 import argparse
 import serial
 from time import sleep
 import sys
 import paho.mqtt.client as mqtt
 import paho.mqtt.publish as publish
+
+Device.pin_factory = LGPIOFactory()
 
 def ledswitch(sensor, state):
     state_map = {0: "OK", 1: "WARN", 2: "CRIT"}
