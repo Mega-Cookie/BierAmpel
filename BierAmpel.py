@@ -99,31 +99,12 @@ while True:
         state[0] = 0 # placeholder state
         state[2] = 0 # placeholder state
         worststate = max(state)
-        if worststate == 0:
-            leds.totalOK.on()
-            leds.totalWARN.off()
-            leds.totalCRIT.off()
-        elif worststate == 1:
-            leds.totalOK.off()
-            leds.totalWARN.on()
-            leds.totalCRIT.off()
-        elif worststate ==2:
-            leds.totalOK.off()
-            leds.totalWARN.off()
-            leds.totalCRIT.on()
 
-        if state[1] == 0:
-            leds.lightOK.on()
-            leds.lightWARN.off()
-            leds.lightCRIT.off()
-        elif state[1] == 1:
-            leds.lightOK.off()
-            leds.lightWARN.on()
-            leds.lightCRIT.off()
-        elif state[1] ==2:
-            leds.lightOK.off()
-            leds.lightWARN.off()
-            leds.lightCRIT.on()
+        ledswitch(weight, state[0])
+        ledswitch(light, state[1])
+        ledswitch(temp, state[2])
+        #ledswitch(env, state[3])
+        ledswitch(total, worststate)
 
         msgs = [
             {"topic": "bierampel/weight/sensor", "payload": data[0]},
@@ -137,3 +118,13 @@ while True:
             {"topic": "bierampel/worst/state", "payload": worststate}
         ]
         publish.multiple(msgs, hostname=MQTT_BROKER)
+
+def ledswitch(sensor, state)
+    state_map = {0: "OK", 1: "WARN", 2: "CRIT"}
+    suffix = status_map.get(state)
+    for led in leds:
+        led.off()
+    if suffix:
+        sensor_name = f"{sensor}{suffix}"
+        led_obj = getattr(leds, attr_name)
+        led_obj.on()
