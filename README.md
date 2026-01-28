@@ -1,4 +1,7 @@
 # BierAmpel
+
+[![Build Nuitka Binary](https://github.com/Mega-Cookie/BierAmpel/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/Mega-Cookie/BierAmpel/actions/workflows/build.yml)
+
 Dokumentation der Projekarbeit im Lernfeld 7 der Gruppe 3
 
 ## Gruppemitglieder
