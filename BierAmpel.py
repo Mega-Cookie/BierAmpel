@@ -8,6 +8,7 @@ import paho.mqtt.client as mqtt
 import paho.mqtt.publish as publish
 
 # Define LED Pins
+sensor_state_map = {0: "weight", 1: "light", 2: "temp", 3: "env", 4: "total"}
 leds = LEDBoard(
     lightOK = 17,
     lightWARN = 16,
@@ -15,6 +16,12 @@ leds = LEDBoard(
     weightOK = 12,
     weightWARN = 6,
     weightCRIT = 5,
+    tempOK = 27,
+    tempWARN = 22,
+    tempCRIT= 17,
+    envOK = 25,
+    envWARN = 24,
+    envCRIT = 23,
     totalOK = 12,
     totalWARN = 6,
     totalCRIT = 5
@@ -58,7 +65,7 @@ client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
 client.connect(MQTT_BROKER, MQTT_PORT)
 client.loop_start()
 
-state = [0,0,0]
+state = [0,0,0,0,0]
 unit = int(500)
 
 # Connect to Serial
@@ -98,13 +105,12 @@ while True:
                 state[i] = 2
         state[0] = 0 # placeholder state
         state[2] = 0 # placeholder state
-        worststate = max(state)
+        state[3] = 0 # placeholder state
+        state[4] = max(state[0:4])
 
-        ledswitch(weight, state[0])
-        ledswitch(light, state[1])
-        ledswitch(temp, state[2])
-        #ledswitch(env, state[3])
-        ledswitch(total, worststate)
+        for i in range(0,3,1):
+            ledswitch(sensor_state_map.get(i), state[i])
+
 
         msgs = [
             {"topic": "bierampel/weight/sensor", "payload": data[0]},
@@ -115,7 +121,7 @@ while True:
             {"topic": "bierampel/light/state", "payload": state[1]},
             {"topic": "bierampel/temp/sensor", "payload": data[3]},
             {"topic": "bierampel/temp/state", "payload": state[2]},
-            {"topic": "bierampel/worst/state", "payload": worststate}
+            {"topic": "bierampel/worst/state", "payload": state[4]}
         ]
         publish.multiple(msgs, hostname=MQTT_BROKER)
 
