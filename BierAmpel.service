@@ -1,0 +1,15 @@
+[Unit]
+Description=Ampelkontrolle und MQTT Broadcast.
+After=network.target mosquitto.service
+Wants=mosquitto.service
+
+[Service]
+Type=exec
+ExecStart=/opt/BierAmpel/BierAmpel -serial /dev/ttyS0
+Restart=on-failure
+RestartSec=5
+User=root
+Group=root
+
+[Install]
+WantedBy=multi-user.target
