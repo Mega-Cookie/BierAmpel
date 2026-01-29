@@ -1,3 +1,4 @@
+lgpio
 pyserial
 paho-mqtt
 gpiozero

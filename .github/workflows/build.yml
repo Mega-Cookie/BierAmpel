@@ -31,8 +31,6 @@ jobs:
       - name: Build with Nuitka
         run: |
           python -m nuitka --standalone \
-          --include-package=gpiozero \
-          --include-module=gpiozero.pins.lgpio \
           --output-dir=packages \
           --output-filename=BierAmpel-arm64rpi5 \
           --onefile BierAmpel.py
