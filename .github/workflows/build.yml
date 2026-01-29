@@ -21,14 +21,11 @@ jobs:
         with:
           python-version: '3.13'
 
-      - name: Install System Dependencies for GPIO
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y pigpio python3-pigpio python3-dev build-essential
-
       - name: Install Python Dependencies
         run: |
+          sudo apt-get update
           sudo apt-get install python3-dev
+          python -m pip install --upgrade pip
           pip install nuitka
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
