@@ -33,7 +33,7 @@ jobs:
           python -m nuitka --standalone \
           --include-package=gpiozero \
           --include-module=gpiozero.pins.lgpio \
-          --plugin-enable=pyside2 --output-dir=packages \
+          --output-dir=packages \
           --output-filename=BierAmpel-arm64rpi5 \
           --onefile BierAmpel.py
 
