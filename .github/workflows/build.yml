@@ -34,7 +34,6 @@ jobs:
           python -m nuitka --standalone \
           --output-dir=packages \
           --output-filename=BierAmpel-arm64rpi5 \
-          --deployment \
           --onefile BierAmpel.py
 
       - name: Upload Binary
