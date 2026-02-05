@@ -146,7 +146,6 @@ try:
                     state[i] = 2
             state[0] = 0 # placeholder state
             state[2] = 0 # placeholder state
-            state[3] = 0 # placeholder state
             state[4] = max(state[0:4])
 
             for led in leds:
