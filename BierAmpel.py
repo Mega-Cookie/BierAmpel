@@ -14,12 +14,16 @@ Device.pin_factory = LGPIOFactory()
 def cleanup_and_exit(sig, frame):
     print("\nBeende Binary sauber...")
     
-    # 1. MQTT sauber trennen
+    # 1. LEDs abschalten
+    leds.close() # Explizites Schließen
+    print("LEDs abgschalten.")
+
+    # 2. MQTT sauber trennen
     client.loop_stop()
     client.disconnect()
     print("MQTT-Verbindung getrennt.")
     
-    # 2. Seriellen Port schließen
+    # 3. Seriellen Port schließen
     if ser.is_open:
         ser.close()
     print("Serielle Schnittstelle geschlossen.")
