@@ -28,7 +28,7 @@ void setup() {
   pinMode(buzzPin, OUTPUT);
   digitalWrite(buzzPin, LOW);
   scale.begin(DOUT_PIN, SCK_PIN);
-  scale.set_scale(1.0);
+  scale.set_scale(24);
   delay(500);
   scale.tare();
   sensors.begin();
@@ -61,7 +61,7 @@ void loop() {
     float tempCelsius = sensors.getTempCByIndex(0);
 
     if (scale.is_ready()) {
-      multiPrint("Gewicht:" + String(scale.get_units(), 1) + ",");
+      multiPrint("Gewicht:" + String(scale.get_units(), 0) + ",");
     } else {
       multiPrint("Gewicht: 0,");
     }
