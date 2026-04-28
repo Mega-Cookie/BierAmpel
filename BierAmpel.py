@@ -14,12 +14,16 @@ Device.pin_factory = LGPIOFactory()
 def cleanup_and_exit(sig, frame):
     print("\nBeende Binary sauber...")
     
-    # 1. MQTT sauber trennen
+    # 1. LEDs abschalten
+    leds.close() # Explizites Schließen
+    print("LEDs abgschalten.")
+
+    # 2. MQTT sauber trennen
     client.loop_stop()
     client.disconnect()
     print("MQTT-Verbindung getrennt.")
     
-    # 2. Seriellen Port schließen
+    # 3. Seriellen Port schließen
     if ser.is_open:
         ser.close()
     print("Serielle Schnittstelle geschlossen.")
@@ -120,7 +124,7 @@ try:
             data = line.split(",")
             data = [float(item.split(":")[1]) for item in data]
             data = [int(v) if v.is_integer() else v for v in data]
-            count = data[0]/unit
+            count = round(data[0]/unit, 0)
             if count <= 2:
                 if count < 1:
                     state[0] = 2
@@ -144,7 +148,6 @@ try:
             if data[2] == 1:
                 for i in range(len(state)):
                     state[i] = 2
-            state[0] = 0 # placeholder state
             state[4] = max(state[0:4])
 
             for led in leds:
