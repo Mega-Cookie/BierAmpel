@@ -12,8 +12,7 @@ import paho.mqtt.publish as publish
 
 Device.pin_factory = LGPIOFactory()
 
-
-# 1. Logging konfigurieren
+# Logging
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
@@ -23,7 +22,6 @@ logging.basicConfig(
     ]
 )
 
-# 2. Klasse zum Umleiten von print
 class StreamToLogger:
     def __init__(self, logger, log_level):
         self.logger = logger
@@ -37,10 +35,10 @@ class StreamToLogger:
     def flush(self):
         pass
 
-# 3. System-Output umbiegen
 sys.stdout = StreamToLogger(logging.getLogger('STDOUT'), logging.INFO)
 sys.stderr = StreamToLogger(logging.getLogger('STDERR'), logging.ERROR)
 
+# Funktionen
 def ledtest():
     print("LED Test")
     # LED Test
