@@ -12,6 +12,7 @@ import paho.mqtt.publish as publish
 Device.pin_factory = LGPIOFactory()
 
 def ledtest():
+    print("LED Test")
     # LED Test
     # all
     leds.on()
@@ -24,6 +25,7 @@ def ledtest():
         led.on()
         sleep(0.5)
         led.off()
+    print("LED Test fertig")
 
 def cleanup_and_exit(sig, frame):
     print("\nBeende Binary sauber...")
@@ -109,6 +111,7 @@ mqtt_auth = {
 client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
 client.connect(MQTT_BROKER, MQTT_PORT)
 client.loop_start()
+print("Mit MQTT Broker verbunden")
 
 state = [0,0,0,0,0]
 unit = int(500)
@@ -116,6 +119,7 @@ unit = int(500)
 # Connect to Serial
 ser = serial.Serial(SERIAL_PORT, BAUD_RATE, timeout=1)
 sleep(2)
+print("Mit Arduino über Serial verbunden")
 
 ledtest
 
