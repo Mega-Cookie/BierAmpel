@@ -5,11 +5,41 @@ import argparse
 import serial
 from time import sleep
 import sys
+import logging
 import signal
 import paho.mqtt.client as mqtt
 import paho.mqtt.publish as publish
 
 Device.pin_factory = LGPIOFactory()
+
+
+# 1. Logging konfigurieren
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler("bierampel.log"), # Schreibt in Datei
+        logging.StreamHandler(sys.__stdout__)  # Schreibt weiterhin in die Konsole
+    ]
+)
+
+# 2. Klasse zum Umleiten von print
+class StreamToLogger:
+    def __init__(self, logger, log_level):
+        self.logger = logger
+        self.log_level = log_level
+        self.linebuf = ''
+
+    def write(self, buf):
+        for line in buf.rstrip().splitlines():
+            self.logger.log(self.log_level, line.rstrip())
+
+    def flush(self):
+        pass
+
+# 3. System-Output umbiegen
+sys.stdout = StreamToLogger(logging.getLogger('STDOUT'), logging.INFO)
+sys.stderr = StreamToLogger(logging.getLogger('STDERR'), logging.ERROR)
 
 def ledtest():
     print("LED Test")
@@ -121,7 +151,7 @@ ser = serial.Serial(SERIAL_PORT, BAUD_RATE, timeout=1)
 sleep(2)
 print("Mit Arduino über Serial verbunden")
 
-ledtest
+ledtest()
 
 # Read Sensors, Switch LEDs, Send MQTT
 try:
