@@ -11,6 +11,20 @@ import paho.mqtt.publish as publish
 
 Device.pin_factory = LGPIOFactory()
 
+def ledtest():
+    # LED Test
+    # all
+    leds.on()
+    sleep(2)
+    leds.off()
+    sleep(0.5)
+    # cycle
+    for name in led_order:
+        led = getattr(leds, name)
+        led.on()
+        sleep(0.5)
+        led.off()
+
 def cleanup_and_exit(sig, frame):
     print("\nBeende Binary sauber...")
     
@@ -69,19 +83,6 @@ leds = LEDBoard(
     envCRIT = 23
 )
 
-# LED Test
-# all
-leds.on()
-sleep(3)
-leds.off()
-sleep(0.5)
-# cycle
-for name in led_order:
-    led = getattr(leds, name)
-    led.on()
-    sleep(0.5)
-    led.off()
-
 # Input arguments
 parser = argparse.ArgumentParser(description="Arduino to MQTT Script")
 
@@ -115,6 +116,8 @@ unit = int(500)
 # Connect to Serial
 ser = serial.Serial(SERIAL_PORT, BAUD_RATE, timeout=1)
 sleep(2)
+
+ledtest
 
 # Read Sensors, Switch LEDs, Send MQTT
 try:
