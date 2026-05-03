@@ -5,17 +5,68 @@ import argparse
 import serial
 from time import sleep
 import sys
+import logging
 import signal
 import paho.mqtt.client as mqtt
 import paho.mqtt.publish as publish
 
 Device.pin_factory = LGPIOFactory()
 
+# Logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler("bierampel.log"),
+        logging.StreamHandler(sys.__stdout__)
+    ]
+)
+
+logger = logging.getLogger(__name__)
+file_logger = logging.getLogger("OnlyFile")
+file_logger.propagate = False # Verhindert, dass die Nachricht an die Konsole weitergereicht wird
+file_handler = logging.FileHandler("bierampel.log")
+file_handler.setFormatter(logging.Formatter('%(asctime)s - %(message)s'))
+file_logger.addHandler(file_handler)
+
+class StreamToLogger:
+    def __init__(self, logger, log_level):
+        self.logger = logger
+        self.log_level = log_level
+        self.linebuf = ''
+
+    def write(self, buf):
+        for line in buf.rstrip().splitlines():
+            self.logger.log(self.log_level, line.rstrip())
+
+    def flush(self):
+        pass
+
+sys.stdout = StreamToLogger(logging.getLogger('STDOUT'), logging.INFO)
+sys.stderr = StreamToLogger(logging.getLogger('STDERR'), logging.ERROR)
+
+# Funktionen
+def ledtest():
+    print("LED Test")
+    # LED Test
+    # all
+    leds.on()
+    sleep(2)
+    leds.off()
+    sleep(0.5)
+    # cycle
+    for name in led_order:
+        led = getattr(leds, name)
+        led.on()
+        sleep(0.5)
+        led.off()
+    print("LED Test fertig")
+
 def cleanup_and_exit(sig, frame):
-    print("\nBeende Binary sauber...")
+    print("Beende Monitoring...")
     
     # 1. LEDs abschalten
-    leds.close() # Explizites Schließen
+    leds.close()
     print("LEDs abgschalten.")
 
     # 2. MQTT sauber trennen
@@ -40,7 +91,7 @@ def ledswitch(sensor, state):
         sensor_name = f"{sensor}{suffix}"
         led_obj = getattr(leds, sensor_name)
         led_obj.on()
-        print(sensor_name)
+        file_logger.info(sensor_name)
 
 # Define LED Pins
 sensor_state_map = {0: "weight", 1: "light", 2: "temp", 3: "env", 4: "total"}
@@ -69,19 +120,6 @@ leds = LEDBoard(
     envCRIT = 23
 )
 
-# LED Test
-# all
-leds.on()
-sleep(3)
-leds.off()
-sleep(0.5)
-# cycle
-for name in led_order:
-    led = getattr(leds, name)
-    led.on()
-    sleep(0.5)
-    led.off()
-
 # Input arguments
 parser = argparse.ArgumentParser(description="Arduino to MQTT Script")
 
@@ -108,6 +146,7 @@ mqtt_auth = {
 client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
 client.connect(MQTT_BROKER, MQTT_PORT)
 client.loop_start()
+print("Mit MQTT Broker verbunden")
 
 state = [0,0,0,0,0]
 unit = int(500)
@@ -115,7 +154,12 @@ unit = int(500)
 # Connect to Serial
 ser = serial.Serial(SERIAL_PORT, BAUD_RATE, timeout=1)
 sleep(2)
+print("Mit Arduino über Serial verbunden")
 
+ledtest()
+sleep(1)
+
+print("Start monitoring...")
 # Read Sensors, Switch LEDs, Send MQTT
 try:
     while True:
