@@ -115,8 +115,8 @@ leds = LEDBoard(
     tempOK = 27,
     tempWARN = 22,
     tempCRIT= 17,
-    envWARN = 24,
     envOK = 25,
+    envWARN = 24,
     envCRIT = 23
 )
 
