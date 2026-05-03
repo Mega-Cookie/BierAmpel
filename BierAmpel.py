@@ -17,10 +17,17 @@ logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler("bierampel.log"), # Schreibt in Datei
-        logging.StreamHandler(sys.__stdout__)  # Schreibt weiterhin in die Konsole
+        logging.FileHandler("bierampel.log"),
+        logging.StreamHandler(sys.__stdout__)
     ]
 )
+
+logger = logging.getLogger(__name__)
+file_logger = logging.getLogger("OnlyFile")
+file_logger.propagate = False # Verhindert, dass die Nachricht an die Konsole weitergereicht wird
+file_handler = logging.FileHandler("bierampel.log")
+file_handler.setFormatter(logging.Formatter('%(asctime)s - %(message)s'))
+file_logger.addHandler(file_handler)
 
 class StreamToLogger:
     def __init__(self, logger, log_level):
@@ -56,10 +63,10 @@ def ledtest():
     print("LED Test fertig")
 
 def cleanup_and_exit(sig, frame):
-    print("\nBeende Binary sauber...")
+    print("Beende Monitoring...")
     
     # 1. LEDs abschalten
-    leds.close() # Explizites Schließen
+    leds.close()
     print("LEDs abgschalten.")
 
     # 2. MQTT sauber trennen
@@ -84,7 +91,7 @@ def ledswitch(sensor, state):
         sensor_name = f"{sensor}{suffix}"
         led_obj = getattr(leds, sensor_name)
         led_obj.on()
-        print(sensor_name)
+        file_logger.info(sensor_name)
 
 # Define LED Pins
 sensor_state_map = {0: "weight", 1: "light", 2: "temp", 3: "env", 4: "total"}
@@ -150,7 +157,9 @@ sleep(2)
 print("Mit Arduino über Serial verbunden")
 
 ledtest()
+sleep(1)
 
+print("Start monitoring...")
 # Read Sensors, Switch LEDs, Send MQTT
 try:
     while True:
