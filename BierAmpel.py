@@ -49,16 +49,11 @@ sys.stderr = StreamToLogger(logging.getLogger('STDERR'), logging.ERROR)
 def ledtest():
     print("LED Test")
     # LED Test
-    # all
-    leds.on()
-    sleep(2)
-    leds.off()
-    sleep(0.5)
     # cycle
     for name in led_order:
         led = getattr(leds, name)
         led.on()
-        sleep(0.5)
+        sleep(0.75)
         led.off()
     print("LED Test fertig")
 
