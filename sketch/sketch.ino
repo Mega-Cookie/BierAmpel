@@ -1,13 +1,12 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
 #include <HX711.h>
-#include <SoftwareSerial.h>
 
 unsigned long lastTime = 0;
 const unsigned long interval = 1000;
 const int threshold = 30;
 const int lightPin = 2;
-const int buzzPin = 6;
+
 int trigger = 0;
 int alarm = 0;
 
@@ -19,7 +18,7 @@ const int DOUT_PIN = 4;
 const int SCK_PIN = 5;
 HX711 scale;
 
-SoftwareSerial piSerial(10, 11);
+const int buzzPin = 6;
 
 void setup() {
   Serial.begin(9600);
