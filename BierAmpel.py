@@ -49,16 +49,11 @@ sys.stderr = StreamToLogger(logging.getLogger('STDERR'), logging.ERROR)
 def ledtest():
     print("LED Test")
     # LED Test
-    # all
-    leds.on()
-    sleep(2)
-    leds.off()
-    sleep(0.5)
     # cycle
     for name in led_order:
         led = getattr(leds, name)
         led.on()
-        sleep(0.5)
+        sleep(0.75)
         led.off()
     print("LED Test fertig")
 
@@ -93,6 +88,11 @@ def ledswitch(sensor, state):
         led_obj.on()
         file_logger.info(sensor_name)
 
+env_data = float(0)
+def on_message(client, userdata, msg):
+    global env_data
+    env_data = float(msg.payload.decode())
+
 # Define LED Pins
 sensor_state_map = {0: "weight", 1: "light", 2: "temp", 3: "env", 4: "total"}
 led_order = [
@@ -115,8 +115,8 @@ leds = LEDBoard(
     tempOK = 27,
     tempWARN = 22,
     tempCRIT= 17,
-    envWARN = 24,
     envOK = 25,
+    envWARN = 24,
     envCRIT = 23
 )
 
@@ -131,6 +131,8 @@ parser.add_argument("--port", default=1883, help="MQTT broker port")
 parser.add_argument("--user", help="MQTT broker User")
 parser.add_argument("--pass", dest="password", help="MQTT broker Password")
 
+parser.add_argument("--env", default="env/temp", help="MQTT topic for environment data")
+
 args = parser.parse_args()
 
 SERIAL_PORT = args.serial
@@ -142,9 +144,14 @@ mqtt_auth = {
     "username": args.user,
     "password": args.password
 }
+env_topic = args.env
+
 # Connect to MQTT
 client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
+client.username_pw_set(mqtt_auth["username"], mqtt_auth["password"])
+client.on_message = on_message
 client.connect(MQTT_BROKER, MQTT_PORT)
+client.subscribe(env_topic)
 client.loop_start()
 print("Mit MQTT Broker verbunden")
 
@@ -189,6 +196,13 @@ try:
                     state[2] = 1
             else:
                 state[2] = 0
+            if env_data < 18:
+                if env_data < 16:
+                    state[3] = 2
+                else:
+                    state[3] = 1
+            else:
+                state[3] = 0
             if data[2] == 1:
                 for i in range(len(state)):
                     state[i] = 2
@@ -209,9 +223,10 @@ try:
                 {"topic": "bierampel/light/state", "payload": state[1]},
                 {"topic": "bierampel/temp/sensor", "payload": data[3]},
                 {"topic": "bierampel/temp/state", "payload": state[2]},
+                {"topic": "bierampel/env/state", "payload": state[3]},
                 {"topic": "bierampel/worst/state", "payload": state[4]}
             ]
-            publish.multiple(msgs, hostname=MQTT_BROKER)
+            publish.multiple(msgs, hostname=MQTT_BROKER, auth=mqtt_auth)
 except Exception as e:
     print(f"Fehler: {e}")
     cleanup_and_exit(None, None)

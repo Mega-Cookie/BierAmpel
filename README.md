@@ -64,3 +64,8 @@ Die LDE-Ampel druck ich im 3D-Drucker
 
 ## Nutzung
 ./BierAmpel --boker \<MQTT broker IP\> --port \<MQTT broker port\> --user \<MQTT User\> --pass \<MQTT Password\> --serial \<Serial Port\>
+
+## Schaltkreis
+### LEDs
+![](Images/RPI_LED.png)
+### Sensoren
