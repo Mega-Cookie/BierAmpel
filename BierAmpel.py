@@ -173,8 +173,12 @@ try:
         if ser.in_waiting > 0:
             line = ser.readline().decode("utf-8").strip()
             data = line.split(",")
-            data = [float(item.split(":")[1]) for item in data]
-            data = [int(v) if v.is_integer() else v for v in data]
+            data = [
+                float(item.split(":")[1]) for item in data
+            ]
+            data = [
+                int(v) if v.is_integer() else v for v in data
+            ]
             count = round(data[0]/unit, 0)
             if count <= 2:
                 if count < 1:
@@ -214,17 +218,20 @@ try:
             for i in range(0,5,1):
                 ledswitch(sensor_state_map.get(i), state[i])
 
+            topics_payloads = [
+                ("bierampel/weight/sensor", data[0]),
+                ("bierampel/weight/count", count),
+                ("bierampel/weight/state", state[0]),
+                ("bierampel/light/sensor", data[1]),
+                ("bierampel/light/alarm", data[2]),
+                ("bierampel/light/state", state[1]),
+                ("bierampel/temp/sensor", data[3]),
+                ("bierampel/temp/state", state[2]),
+                ("bierampel/env/state", state[3]),
+                ("bierampel/worst/state", state[4])
+            ]
             msgs = [
-                {"topic": "bierampel/weight/sensor", "payload": data[0]},
-                {"topic": "bierampel/weight/count", "payload": count},
-                {"topic": "bierampel/weight/state", "payload": state[0]},
-                {"topic": "bierampel/light/sensor", "payload": data[1]},
-                {"topic": "bierampel/light/alarm", "payload": data[2]},
-                {"topic": "bierampel/light/state", "payload": state[1]},
-                {"topic": "bierampel/temp/sensor", "payload": data[3]},
-                {"topic": "bierampel/temp/state", "payload": state[2]},
-                {"topic": "bierampel/env/state", "payload": state[3]},
-                {"topic": "bierampel/worst/state", "payload": state[4]}
+                {"topic": topic, "payload": payload} for topic, payload in topics_payloads
             ]
             publish.multiple(msgs, hostname=MQTT_BROKER, auth=mqtt_auth)
 except Exception as e:
