@@ -67,6 +67,6 @@ Die LDE-Ampel druck ich im 3D-Drucker
 
 ## Schaltkreis
 ### LEDs
-![](Images/RPI_LED.png)
+![](Images/RPi_LED.png)
 ### Sensoren
 ![](Images/Arduino_Sensors.png)
