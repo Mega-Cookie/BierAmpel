@@ -63,9 +63,10 @@ Die LDE-Ampel druck ich im 3D-Drucker
 |**Gesamt**      | **17,96€**|
 
 ## Nutzung
-./BierAmpel --boker \<MQTT broker IP\> --port \<MQTT broker port\> --user \<MQTT User\> --pass \<MQTT Password\> --serial \<Serial Port\>
+./BierAmpel --boker \<MQTT broker IP\> --port \<MQTT broker port\> --user \<MQTT User\> --pass \<MQTT Password\> --serial \<Serial Port\> --env \<ambient temp MQTT topic\>
 
 ## Schaltkreis
 ### LEDs
 ![](Images/RPI_LED.png)
 ### Sensoren
+![](Images/Arduino_Sensors.png)
