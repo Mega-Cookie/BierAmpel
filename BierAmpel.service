@@ -5,7 +5,7 @@ Wants=mosquitto.service
 
 [Service]
 Type=exec
-ExecStart=/opt/BierAmpel/BierAmpel -serial /dev/ttyS0
+ExecStart=/opt/BierAmpel/BierAmpel --serial /dev/ttyUSB0 --user user --pass password
 Restart=on-failure
 RestartSec=5
 User=root
