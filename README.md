@@ -2,15 +2,15 @@
 
 [![Build Nuitka Binary](https://github.com/Mega-Cookie/BierAmpel/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/Mega-Cookie/BierAmpel/actions/workflows/build.yml)
 
-Dokumentation der Projekarbeit im Lernfeld 7 der Gruppe 3
+Dokumentation der Projekarbeit im Lernfeld 7 der Gruppe 3.
 
 ## Gruppemitglieder
-- Ahmed
-- Ben
-- Kevin
-- Lucas
-- Michael
-- Zenon
+* Ahmed
+* Ben
+* Kevin
+* Lucas
+* Michael
+* Zenon
 
 ## Wir brauchen:
 1. Eine Kühlbox 
@@ -27,7 +27,7 @@ Dokumentation der Projekarbeit im Lernfeld 7 der Gruppe 3
     - Ist in einer kleinen Glasflasche mit Wasser um Temperatur einer Flüsigkeit in der Kühlbox zu messen.
     - [Amazon](https://www.amazon.de/Temperatursensor-ENOPYO-Wasserdichte-Temperaturf%C3%BChler-Temperaturkabel/dp/B0DPKHDMHH)
 
-1. Helligkeitssensor (DollaTek 3Pcs Digitales Licht Intensitätssensormodul) in der Kühlbox 
+1. Helligkeitssensor (DollaTek Digitales Licht Intensitätssensormodul) in der Kühlbox 
     - Ist die Box offen?
     - Empfindilichkeit kann über Drehregler eingestellt werden.
     - [Amazon](https://www.amazon.de/DollaTek-Digitales-Intensit%C3%A4tssensormodul-Fotowiderstand-Photowiderstand/dp/B07DJ4WQV5)
@@ -44,6 +44,18 @@ Dokumentation der Projekarbeit im Lernfeld 7 der Gruppe 3
     - Geht nach 30 Sekunden los wenn der Deckel auf ist.
     - Buzzer habe ich. 
         - Alternativ Lautsprecher am RPi spielt einen Alarmton ab.
+
+1. RaspberryPi
+    - RPi5 wurde vom Betrieb gestellt
+    - Sammelt die Daten
+    - Sendet an MQTT (bzw. stellt selbst den MQTT Broker)
+    - Steuert die Ampeln
+
+1. Arduino
+    - Arduino Nano ist vorhanden
+    - Liest die Sensoren aus
+    - sendet über USB die Daten an den RPi
+    - Steuert den Buzzer
 
 
 ## Umsetzung
@@ -66,21 +78,31 @@ Kosten für Kleinteile wie Kabel, LEDs, und PLA, sowie den Arduino werden vernac
 
 ## Nutzung
 
+### Download
+Die Binary kann aus dem [GitHub Release](https://github.com/Mega-Cookie/BierAmpel/releases/latest) runtergeladen werden:
+
 ```
-./BierAmpel-arm64rpi5   --boker <MQTT broker adress> \ [localhost]
-                        --port <MQTT broker port> \ [1883]
-                        --user <MQTT user> \
-                        --pass <MQTT password> \
-                        --serial <serial port> \ [/dev/ttyACM0]
-                        --env <ambient temp MQTT topic> [env/temp]
+wget https://github.com/Mega-Cookie/BierAmpel/releases/latest/download/BierAmpel-arm64rpi5
 ```
 
-\<value\>
+### Binary starten
 
-[default]
+Die entsprechenden <Übergabeparameter> müssen angegeben werden, andernsfalls werden [Defaultwerte] verwendet.
+
+Für den Zugriff auf das Serial Interface sind in Regel `root`-Rechete nötig. Die Binary muss also als `root` oder mit `sudo` ausgeführt werden.
+
+```
+sudo ./BierAmpel-arm64rpi5 \
+--boker <MQTT broker adress> \ [localhost] # localhost requires a configured MQTT broker.
+--port <MQTT broker port> \ [1883]
+--user <MQTT user> \
+--pass <MQTT password> \
+--serial <serial port> \ [/dev/ttyACM0] # default set to ttyACM0 for dev. On RPI it should be ttyUSB0
+--env <ambient temp MQTT topic> [env/temp] # default set to env/temp for dev.
+```
 
 ## Schaltkreis
 ### LEDs
-![](Images/RPi_LED.png)
+![RPi pin population](Images/RPi_LED.png)
 ### Sensoren
-![](Images/Arduino_Sensors.png)
+![Arduino pin population](Images/Arduino_Sensors.png)
