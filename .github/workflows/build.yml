@@ -36,6 +36,9 @@ jobs:
           --output-filename=BierAmpel-arm64rpi5 \
           --onefile BierAmpel.py
 
+      - name: Make Binary Executable
+        run: chmod +x packages/BierAmpel-arm64rpi5
+
       - name: Upload Binary
         uses: actions/upload-artifact@v4
         with:
